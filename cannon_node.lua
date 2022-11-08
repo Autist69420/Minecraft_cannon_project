@@ -1,5 +1,5 @@
 ---
---- Created by SpacEeye.
+--- Created by SpaceEye.
 ---
 
 function clear_console()
