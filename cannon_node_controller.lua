@@ -41,21 +41,65 @@ function async_ui()
     end
 end
 
+function os_info()
+    print("Cannon node controller 0.0.1")
+    print("Made by SpaceEye https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+    print("")
+end
+
 function connect_to_modules()
+    function await_connection_to_reloader()
+        local x, y = term.getCursorPos()
+
+        -- red text on white
+        term.setTextColor(16384)
+        term.setBackgroundColor(1)
+
+        term.write("Trying to connect to the reloading module...")
+        while true do
+            _, freq, _, _, msg, _ = os.pullEvent("modem_message")
+            if freq == "back" then
+                break
+            end
+        end
+
+        term.setTextColor(32)
+        term.setBackgroundColor(32768)
+        term.setCursorPos(x,y)
+        term.clearLine()
+
+        term.write("Connected to the reloading module!")
+        term.setCursorPos(x, y+1)
+    end
+
+    function await_connection_to_cannon_controller()
+        local x, y = term.getCursorPos()
+
+        -- red text on white
+        term.setTextColor(16384)
+        term.setBackgroundColor(1)
+
+        term.write("Trying to connect to the cannon control module...")
+        while true do
+            _, freq, _, _, msg, _ = os.pullEvent("modem_message")
+            if freq == "back" then
+                break
+            end
+        end
+
+        term.setTextColor(32)
+        term.setBackgroundColor(32768)
+        term.setCursorPos(x, y)
+        term.clearLine()
+
+        term.write("Connected to the cannon control module!")
+        term.setCursorPos(x, y+1)
+    end
+
     term.setCursorPos(1, 1)
 
-    -- red text on white
-    term.setTextColor(16384)
-    term.setBackgroundColor(1)
-
-    term.write("Trying to connect to the reloading module...")
-    l_modem.open(1)
-    _, msg, __ = rednet.receive("reloader")
-
-    term.setTextColor(32)
-    term.setBackgroundColor(32768)
-    term.write("Connected to the reloading module!", "5", "1")
-
+    await_connection_to_reloader()
+    await_connection_to_cannon_controller()
 
     term.setTextColor(1)
     term.setBackgroundColor(32768)
@@ -64,6 +108,7 @@ end
 function main_loop()
     local result = connect_to_modules()
 
+    clear_console()
     if not result then
 
         return
