@@ -41,13 +41,13 @@ function async_ui()
     end
 end
 
-function os_info()
-    print("Cannon node controller 0.0.1")
-    print("Made by SpaceEye https://github.com/SuperSpaceEye/Minecraft_cannon_project")
-    print("")
-end
-
 function connect_to_modules()
+    function os_info()
+        print("Cannon node controller 0.0.1")
+        print("Made by SpaceEye https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+        print("")
+    end
+
     function await_connection_to_reloader()
         local x, y = term.getCursorPos()
 
@@ -97,6 +97,7 @@ function connect_to_modules()
     end
 
     term.setCursorPos(1, 1)
+    os_info()
 
     await_connection_to_reloader()
     await_connection_to_cannon_controller()
