@@ -6,7 +6,6 @@
 
 a, b = 5, 6
 
-print(a, "a")
-print(b, "b")
 
-print(a, b)
+
+print("a = " .. a)

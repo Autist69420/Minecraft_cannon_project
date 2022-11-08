@@ -15,7 +15,9 @@ g_modem = peripheral.wrap("top")
 clear_console()
 
 print("Type \"help\" to list all available arguments")
-
+print("Placeholder")
+print("Other text")
+print("")
 
 i = 0
 
@@ -24,11 +26,22 @@ function redraw()
     term.setCursorPos(1, 2)
     term.clearLine()
     i = i + 1
-    term.write("i =", i)
+    term.write("i =" .. i)
     term.setCursorPos(x, y)
 end
 
-while true do
-    redraw()
-    sleep(0.1)
+function async_ui()
+    while true do
+        redraw()
+        sleep(0.1)
+    end
 end
+
+function main_loop()
+    while true do
+        mytest = io.read()
+        sleep(0.1)
+    end
+end
+
+parallel.waitForALL(async_ui, main_loop)
