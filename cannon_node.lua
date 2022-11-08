@@ -68,7 +68,7 @@ function connect_to_modules()
         term.write("Trying to connect to the reloading module...")
         while true do
             local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
-            if freq == "back" and msg == "cannon_ctrl" then
+            if freq == "back" and msg["message"] == "reloader" then
                 if are_valid_reloader_arguments() then
                     break
                 end
@@ -97,7 +97,7 @@ function connect_to_modules()
         term.write("Trying to connect to the cannon control module...")
         while true do
             local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
-            if freq == "back" and msg == "cannon_ctrl" then
+            if freq == "back" and msg["message"] == "cannon_ctrl" then
                 if are_valid_cannon_control_arguments() then
                     break
                 end
