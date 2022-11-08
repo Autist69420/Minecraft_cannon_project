@@ -1,5 +1,5 @@
 ---
---- Created by SpacEeye.
+--- Created by SpaceEye.
 ---
 
 function clear_console()
@@ -49,6 +49,7 @@ function connect_to_modules()
         print("Cannon node controller 0.0.1")
         print("Made by SpaceEye")
         print("Code repository: https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+        -- notable mentions
         print("Ballistic calculator made by: @sashafiesta#1978 @Malex#6461")
         print("")
     end
