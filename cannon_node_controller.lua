@@ -12,6 +12,8 @@ l_modem = peripheral.wrap("back")
 -- for communication between nodes (in the future)
 g_modem = peripheral.wrap("top")
 
+clear_console()
+
 print("Type \"help\" to list all available arguments")
 
 
@@ -28,4 +30,5 @@ end
 
 while true do
     redraw()
+    sleep(0.1)
 end
