@@ -41,14 +41,23 @@ function async_ui()
     end
 end
 
+necessary_reloader_arguments = {"load", "unload", "reload"}
+necessary_cannon_controller_arguments = {"move_pitch", "move_yaw", "enable_cannon", "disable_cannon", "fire"}
+
 function connect_to_modules()
-    function os_info()
+    local function os_info()
         print("Cannon node controller 0.0.1")
-        print("Made by SpaceEye https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+        print("Made by SpaceEye")
+        print("Code repository: https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+        print("Ballistic calculator made by: @sashafiesta#1978 @Malex#6461")
         print("")
     end
 
-    function await_connection_to_reloader()
+    local function await_connection_to_reloader()
+        local function are_valid_reloader_arguments()
+            return true
+        end
+
         local x, y = term.getCursorPos()
 
         -- red text on white
@@ -57,9 +66,11 @@ function connect_to_modules()
 
         term.write("Trying to connect to the reloading module...")
         while true do
-            _, freq, _, _, msg, _ = os.pullEvent("modem_message")
-            if freq == "back" then
-                break
+            local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
+            if freq == "back" and msg == "cannon_ctrl" then
+                if are_valid_reloader_arguments() then
+                    break
+                end
             end
         end
 
@@ -72,7 +83,10 @@ function connect_to_modules()
         term.setCursorPos(x, y+1)
     end
 
-    function await_connection_to_cannon_controller()
+    local function await_connection_to_cannon_controller()
+        local function are_valid_cannon_control_arguments()
+            return true
+        end
         local x, y = term.getCursorPos()
 
         -- red text on white
@@ -81,9 +95,11 @@ function connect_to_modules()
 
         term.write("Trying to connect to the cannon control module...")
         while true do
-            _, freq, _, _, msg, _ = os.pullEvent("modem_message")
-            if freq == "back" then
-                break
+            local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
+            if freq == "back" and msg == "cannon_ctrl" then
+                if are_valid_cannon_control_arguments() then
+                    break
+                end
             end
         end
 
