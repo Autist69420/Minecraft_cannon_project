@@ -53,29 +53,6 @@ function loader()
         end
     end
 
-    local function try_update_version()
-        local function compare_files()
-            current_file = fs.open("startup", "r")
-            new_file = fs.open("temp_loader", "r")
-
-            if current_file.readAll() == new_file.readAll() then
-                return true
-            end
-            return false
-        end
-
-        shell.run("wget https://raw.githubusercontent.com/SuperSpaceEye/Minecraft_cannon_project/master/startup_loader.lua temp_loader")
-        if compare_files() then
-            shell.run("rm temp_loader")
-        else
-            shell.run("rm startup")
-            shell.run("rename temp_loader startup")
-            os.reboot()
-        end
-    end
-
-    try_update_version()
-
     if fs.exists("settings") then
         load_preset()
         return
