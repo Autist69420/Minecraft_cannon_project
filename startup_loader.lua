@@ -9,7 +9,7 @@ function loader()
 
         if type == "cannon_node" then
             shell.run("rm cannon_node.lua")
-            shell.run("wget https://github.com/SuperSpaceEye/Minecraft_cannon_project/blob/master/cannon_node.lua")
+            shell.run("wget https://raw.githubusercontent.com/SuperSpaceEye/Minecraft_cannon_project/master/cannon_node.lua")
             shell.run("cannon_node.lua")
 
         elseif type == "reloader_controller" then
