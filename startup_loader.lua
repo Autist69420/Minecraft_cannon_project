@@ -22,8 +22,8 @@ function loader()
     end
 
     local function configure_new()
-        temp.clear()
-        temp.setCursorPos(1, 1)
+        term.clear()
+        term.setCursorPos(1, 1)
 
         while true do
             print("Hello, please choose what part of automatic cannon is this:\n1 - Cannon node\n2 - Cannon controller\n3 - Cannon reloader\n")
@@ -45,8 +45,8 @@ function loader()
                 file.close()
                 os.reboot()
             else
-                temp.clear()
-                temp.setCursorPos(1, 1)
+                term.clear()
+                term.setCursorPos(1, 1)
 
                 print("Not correct option, try again")
             end
