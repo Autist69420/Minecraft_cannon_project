@@ -11,13 +11,16 @@ function loader()
             shell.run("rm cannon_node.lua")
             shell.run("wget https://raw.githubusercontent.com/SuperSpaceEye/Minecraft_cannon_project/master/cannon_node.lua")
             shell.run("cannon_node.lua")
-
         elseif type == "reloader_controller" then
-
+            shell.run("rm reloader_controller.lua")
+            shell.run("wget https://raw.githubusercontent.com/SuperSpaceEye/Minecraft_cannon_project/master/reloader_controller.lua")
+            shell.run("reloader_controller.lua")
         elseif type == "cannon_controller" then
-
+            shell.run("rm cannon_controller.lua")
+            shell.run("wget https://raw.githubusercontent.com/SuperSpaceEye/Minecraft_cannon_project/master/cannon_controller.lua")
+            shell.run("cannon_controller.lua")
         elseif type == "main_node" then
-
+            print("Not implemented")
         end
     end
 
