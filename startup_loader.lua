@@ -55,8 +55,8 @@ function loader()
 
     local function try_update_version()
         local function compare_files()
-            current_file = fs.open("startup")
-            new_file = fs.open("temp_loader")
+            current_file = fs.open("startup", "r")
+            new_file = fs.open("temp_loader", "r")
 
             if current_file.readAll() == new_file.readAll() then
                 return true
