@@ -26,10 +26,7 @@ function loader()
         temp.setCursorPos(1, 1)
 
         while true do
-            print("Hello, please choose what part of automatic cannon is this:\n
-            1 - Cannon node\n
-            2 - Cannon controller\n
-            3 - Cannon reloader\n")
+            print("Hello, please choose what part of automatic cannon is this:\n1 - Cannon node\n2 - Cannon controller\n3 - Cannon reloader\n")
             local answer = io.read()
 
             if answer == "1" then
@@ -53,7 +50,6 @@ function loader()
 
                 print("Not correct option, try again")
             end
-
         end
     end
 
