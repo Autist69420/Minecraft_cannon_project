@@ -1,28 +1,32 @@
 ---
 --- Original creator of formulas: @sashafiesta#1978 on Discord
---- Original creator of python functions: @Malex#6461 on Discord
+--- Original creator of python local functions: @Malex#6461 on Discord
 --- Translated python code to lua: SpaceEye.
 ---
 
-function linspace(start, end_, num)
+-- Simple micro-optimizations for better performance
+local table_insert = table.insert
+local math_rad, math_sin, math_cos, math_log, math_abs = math.rad, math.sin, math.cos, math.log, math.abs
+
+local function linspace(start, end_, num)
     local linspaced = {}
     if num == 0 then return linspaced end
     if num == 1 then
-        table.insert(linspaced, start)
+        table_insert(linspaced, start)
         return linspaced
     end
 
     local delta = (end_ - start) / (num - 1)
 
     for i = 0, num-2 do
-        table.insert(linspaced, start+delta*i)
+        table_insert(linspaced, start+delta*i)
     end
-    table.insert(linspaced, end_)
+    table_insert(linspaced, end_)
 
     return linspaced
 end
 
-function time_in_air(y0, y, Vy)
+local function time_in_air(y0, y, Vy)
     local t = 0
 
     if y0 <= y then
@@ -31,82 +35,69 @@ function time_in_air(y0, y, Vy)
             Vy = 0.99 * Vy - 0.05
             t = t + 1
 
-            if y0 > y then
-                break
-            end
+            if y0 > y then break end
         end
     end
 
     while t < 1000000 do
-
         y0 = y0 + Vy
         Vy = 0.99 * Vy - 0.05
         t = t + 1
 
-        if y0 <= y then
-            return t
-        end
+        if y0 <= y then return t end
     end
 
     return "error"
 end
 
-function get_rough_min(array)
+local function get_rough_min(array)
     local min_delta_t = array[1][1]
     local pitch = 0;
     for i = 1, #array do
         if min_delta_t > array[i][1] then
             min_delta_t = array[i][1]
-            pitch       = array[i][2]
+            pitch = array[i][2]
         end
     end
     return min_delta_t, pitch
 end
 
-function get_refined_min(array)
+local function get_refined_min(array)
     local min_delta_t = array[1][1]
     local pitch_ = 0;
     local airtime_ = 0;
     for i = 1, #array do
         if min_delta_t > array[i][1] then
             min_delta_t  = array[i][1]
-            pitch_       = array[i][2]
-            airtime_     = array[i][3]
+            pitch_ = array[i][2]
+            airtime_ = array[i][3]
         end
     end
     return min_delta_t, pitch_, airtime_
 end
 
-function try_pitch(tried_pitch, initial_speed, cannon, length, target, distance)
-    local tried_pitch_rad = math.rad(tried_pitch)
-
-    local Vw = math.cos(tried_pitch_rad) * initial_speed
-    local Vy = math.sin(tried_pitch_rad) * initial_speed
-
-    local x_coord_2d = length * math.cos(tried_pitch_rad)
+local function try_pitch(tried_pitch, initial_speed, cannon, length, target, distance)
+    local tried_pitch_rad = math_rad(tried_pitch)
+    local Vw = math_cos(tried_pitch_rad) * initial_speed
+    local Vy = math_sin(tried_pitch_rad) * initial_speed
+    local x_coord_2d = length * math_cos(tried_pitch_rad)
 
     if Vw == 0 then return "unreachable" end
 
     local part = 1 - (distance - x_coord_2d) / (100 * Vw)
+    if part <= 0 then return "unreachable" end
 
-    if part <= 0 then
-        return "unreachable"
-    end
-
-    local time_to_target = math.abs(math.log(part) / (-0.010050335853501))
-
-    local y_coord_of_end_barrel = cannon[2] + math.sin(tried_pitch_rad) * length
-
+    local time_to_target = math_abs(math_log(part) / (-0.010050335853501))
+    local y_coord_of_end_barrel = cannon[2] + math_sin(tried_pitch_rad) * length
     local air_time = time_in_air(y_coord_of_end_barrel, target[2], Vy)
 
     if air_time == "error" then return "continue" end
 
     local delta_T = math.abs(time_to_target - air_time)
-
     return delta_T, air_time
 end
 
-function rough_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
+local function rough_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
     local delta_T, _ = try_pitch(tried_pitch, initial_speed, cannon, length, target, distance)
 
     if delta_T == "continue" then
@@ -115,12 +106,12 @@ function rough_estimation(tried_pitch, initial_speed, cannon, length, target, di
         return "unreachable"
     end
 
-    table.insert(delta_times, {delta_T, tried_pitch})
+    table_insert(delta_times, {delta_T, tried_pitch})
 
     return delta_times
 end
 
-function fine_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
+local function fine_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
     local delta_T, air_time = try_pitch(tried_pitch, initial_speed, cannon, length, target, distance)
 
     if delta_T == "continue" then
@@ -129,16 +120,14 @@ function fine_estimation(tried_pitch, initial_speed, cannon, length, target, dis
         return "unreachable"
     end
 
-    table.insert(delta_times, { delta_T, tried_pitch, air_time })
+    table_insert(delta_times, { delta_T, tried_pitch, air_time })
     return delta_times
 end
 
-function ballistics_to_target(cannon, target, power, direction, R1, R2, length)
+local function ballistics_to_target(cannon, target, power, direction, R1, R2, length)
     local Dx, Dz = cannon[1] - target[1], cannon[3] - target[3]
     local distance = math.sqrt(Dx * Dx + Dz * Dz)
-
     local initial_speed = power
-
     local yaw = 0
 
     if Dx ~= 0 then
@@ -147,17 +136,13 @@ function ballistics_to_target(cannon, target, power, direction, R1, R2, length)
         yaw = 90
     end
 
-    if Dx >= 0 then
-        yaw = yaw + 180
-    end
+    if Dx >= 0 then yaw = yaw + 180 end
 
     local delta_times = {}
 
     for tried_pitch = 60, -30, -1 do
-        output = rough_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
-        if output == "unreachable" then
-            return "unreachable"
-        end
+        local output = rough_estimation(tried_pitch, initial_speed, cannon, length, target, distance, delta_times)
+        if output == "unreachable" then return "unreachable" end
         delta_times = output
     end
 
@@ -166,15 +151,13 @@ function ballistics_to_target(cannon, target, power, direction, R1, R2, length)
     delta_times = {}
     local pitches = linspace(pitch-1, pitch+1, 20)
     for i = 1, 20 do
-        output = fine_estimation(pitches[i], initial_speed, cannon, length, target, distance, delta_times)
-        if output == "unreachable" then
-            return
-        end
+        local output = fine_estimation(pitches[i], initial_speed, cannon, length, target, distance, delta_times)
+        if output == "unreachable" then return end
 
         delta_times = output
     end
 
-    local delta_time, pitch, airtime = get_refined_min(delta_times)
+    local delta_time, refined_pitch, airtime = get_refined_min(delta_times)
 
     if direction == "north" then
         yaw = (yaw + 90) % 360
@@ -187,30 +170,30 @@ function ballistics_to_target(cannon, target, power, direction, R1, R2, length)
     end
 
     local yawTime = yaw * 20 / (0.75 * R1)
-    local pitchTime = pitch * 20 / (0.75 * R2)
+    local pitchTime = refined_pitch * 20 / (0.75 * R2)
     local fuzeTime = airtime + (delta_time / 2.) - 10
 
-    return yaw, pitch, airtime, yawTime, pitchTime, fuzeTime
+    return yaw, refined_pitch, airtime, yawTime, pitchTime, fuzeTime
 end
 
 --print("For the cannon coordinates, please input the coordinates of the cannon mount.")
 --
 --cannonCoord = {}
 --print("x coord of cannon : ")
---table.insert(cannonCoord, tonumber(io.read()))
+--table_insert(cannonCoord, tonumber(io.read()))
 --print("y coord of cannon : ")
---table.insert(cannonCoord, tonumber(io.read())+2)
+--table_insert(cannonCoord, tonumber(io.read())+2)
 --print("z coord of cannon : ")
---table.insert(cannonCoord, tonumber(io.read()))
+--table_insert(cannonCoord, tonumber(io.read()))
 --
 --
 --targetCoord = {}
 --print("x coord of target : ")
---table.insert(targetCoord, tonumber(io.read()))
+--table_insert(targetCoord, tonumber(io.read()))
 --print("y coord of target : ")
---table.insert(targetCoord, tonumber(io.read()))
+--table_insert(targetCoord, tonumber(io.read()))
 --print("z coord of target : ")
---table.insert(targetCoord, tonumber(io.read()))
+--table_insert(targetCoord, tonumber(io.read()))
 --
 --print("Number of powder charges (int) : ")
 --powderCharges = tonumber(io.read())
@@ -226,16 +209,16 @@ end
 --print("What is the length of the cannon ? (From the block held by the mount to the tip of the cannon, the held block excluded) ")
 --cannonLength = tonumber(io.read())
 
-cannonCoord = {100, 50, 100}
-targetCoord = {200, 50, 200}
-powderCharges = 8
-directionOfCannon = "north"
-yawRPM = 10
-pitchRPM = 10
-cannonLength = 32
+local cannonCoord = {100, 50, 100}
+local targetCoord = {200, 50, 200}
+local powderCharges = 8
+local directionOfCannon = "north"
+local yawRPM = 10
+local pitchRPM = 10
+local cannonLength = 32
 
 
-yaw, pitch, airtime, yawTime, pitchTime, fuzeTime = ballistics_to_target(
+local yaw, pitch, airtime, yawTime, pitchTime, fuzeTime = ballistics_to_target(
     cannonCoord,
     targetCoord,
     powderCharges,
