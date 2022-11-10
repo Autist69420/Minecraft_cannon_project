@@ -2,15 +2,15 @@
 --- Created by SpaceEye.
 ---
 
-function clear_console()
+local function clear_console()
     term.clear()
     term.setCursorPos(1, 1)
 end
 
 -- for communication between cannon parts
-l_modem = peripheral.wrap("back")
+local l_modem = peripheral.wrap("back")
 -- for communication between nodes (in the future)
-g_modem = peripheral.wrap("top")
+local g_modem = peripheral.wrap("top")
 
 clear_console()
 
@@ -19,9 +19,9 @@ clear_console()
 --print("Other text")
 --print("")
 
-i = 0
+local i = 0
 
-function redraw()
+local function redraw()
     local x, y = term.getCursorPos()
     term.setCursorPos(1, 2)
     term.clearLine()
@@ -30,7 +30,7 @@ function redraw()
     term.setCursorPos(x, y)
 end
 
-function async_ui()
+local function async_ui()
     --while true do
     --    redraw()
     --    sleep(0.1)
@@ -41,10 +41,10 @@ function async_ui()
     end
 end
 
-necessary_reloader_arguments = {"load", "unload", "reload"}
-necessary_cannon_controller_arguments = {"move_pitch", "move_yaw", "enable_cannon", "disable_cannon", "fire"}
+local necessary_reloader_arguments = {"load", "unload", "reload"}
+local necessary_cannon_controller_arguments = {"move_pitch", "move_yaw", "enable_cannon", "disable_cannon", "fire"}
 
-function connect_to_modules()
+local function connect_to_modules()
     local function os_info()
         print("Cannon node controller 0.0.1")
         print("Made by SpaceEye")
@@ -69,9 +69,7 @@ function connect_to_modules()
         while true do
             local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
             if freq == "back" and msg["message"] == "reloader" then
-                if are_valid_reloader_arguments() then
-                    break
-                end
+                if are_valid_reloader_arguments() then break end
             end
         end
 
@@ -85,9 +83,7 @@ function connect_to_modules()
     end
 
     local function await_connection_to_cannon_controller()
-        local function are_valid_cannon_control_arguments()
-            return true
-        end
+        local function are_valid_cannon_control_arguments() return true end
         local x, y = term.getCursorPos()
 
         -- red text on white
@@ -98,9 +94,7 @@ function connect_to_modules()
         while true do
             local  _, freq, _, _, msg, _ = os.pullEvent("modem_message")
             if freq == "back" and msg["message"] == "cannon_ctrl" then
-                if are_valid_cannon_control_arguments() then
-                    break
-                end
+                if are_valid_cannon_control_arguments() then break end
             end
         end
 
@@ -119,21 +113,18 @@ function connect_to_modules()
     await_connection_to_reloader()
     await_connection_to_cannon_controller()
 
-    term.setTextColor(1)
-    term.setBackgroundColor(32768)
+    term.setTextColor(colors.white)
+    term.setBackgroundColor(colors.black)
 end
 
-function main_loop()
+local function main_loop()
     local result = connect_to_modules()
 
     clear_console()
-    if not result then
-
-        return
-    end
+    if not result then return end
 
     while true do
-        mytest = io.read()
+        local mytest = io.read()
 
         sleep(0.1)
     end
