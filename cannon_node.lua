@@ -1,5 +1,5 @@
 ---
---- Created by SpaceEye.
+--- Created by Autist69420.
 ---
 
 local function clear_console()
@@ -47,8 +47,8 @@ local necessary_cannon_controller_arguments = {"move_pitch", "move_yaw", "enable
 local function connect_to_modules()
     local function os_info()
         print("Cannon node controller 0.0.1")
-        print("Made by SpaceEye")
-        print("Code repository: https://github.com/SuperSpaceEye/Minecraft_cannon_project")
+        print("Made by Autist69420")
+        print("Code repository: https://github.com/Autist69420/Minecraft_cannon_project")
         -- notable mentions
         print("Ballistic calculator made by: @sashafiesta#1978 @Malex#6461")
         print("")

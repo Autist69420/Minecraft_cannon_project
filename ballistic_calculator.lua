@@ -1,7 +1,7 @@
 ---
 --- Original creator of formulas: @sashafiesta#1978 on Discord
 --- Original creator of python local functions: @Malex#6461 on Discord
---- Translated python code to lua: SpaceEye.
+--- Translated python code to lua: Autist69420.
 ---
 
 -- Simple micro-optimizations for better performance
